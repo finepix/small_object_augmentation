@@ -9,6 +9,7 @@
 # @Software: PyCharm
 
 """
+<<<<<<< HEAD
 
 """
 100%|██████████| 14961/14961 [00:02<00:00, 5656.33it/s]
@@ -19,6 +20,8 @@
 
 
 
+=======
+>>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
 import os
 from PIL import Image
 from tqdm import tqdm
@@ -101,7 +104,11 @@ if __name__ == "__main__":
     source_ids = search_anno_dir(ANNO_DIR)
     print(source_ids)
 
+<<<<<<< HEAD
     # step 1 获取所有的crop下来的图像
+=======
+    # TODO: step 1 获取所有的crop下来的图像
+>>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
     croped_image_dict = get_all_croped_image_path(CROPED_IMG_DIR)
 
     # 遍历每一个图像，并且在里面随机进行paste
@@ -109,8 +116,55 @@ if __name__ == "__main__":
         source_img_path = os.path.join(IMG_DIR, source_id+'.jpg')
         source_anno_path = os.path.join(ANNO_DIR, source_id+'.xml')
 
+<<<<<<< HEAD
         # step 2 随机从crop的图像中选取n个出来paste，个数取决于这个图像的分辨率, 将得到的图像保存的熬指定的位置
+=======
+        # TODO: step 2 随机从crop的图像中选取n个出来paste，个数取决于这个图像的分辨率
+>>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
         paste_small_objects_to_single_img(source_img_path, source_anno_path, croped_image_dict,
                                                   croped_dir=CROPED_IMG_DIR,
                                                   save_img_dir=PASTE_IMG_DIR,
                                                   save_anno_dir=PASTE_ANNO_DIR)
+<<<<<<< HEAD
+=======
+
+        # TODO: step 3 将得到的图像保存的熬指定的位置
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
