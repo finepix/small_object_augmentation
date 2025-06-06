@@ -39,7 +39,7 @@ def read_label_xml(xml_label_path):
 
     return rs_labels
 
-def create_element_ndoe(doc, tag, value):
+def create_element_node(doc, tag, value):
     """
         添加xmlnode
     :param doc:
@@ -62,7 +62,7 @@ def create_child_node(doc, tag, value, parent_node):
     :param parent_node:
     :return:
     """
-    child_node = create_element_ndoe(doc, tag, value)
+    child_node = create_element_node(doc, tag, value)
     parent_node.appendChild(child_node)
 
 
