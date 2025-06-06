@@ -22,51 +22,6 @@ def random_flip_bbox(roi):
     return roi
 
 
-<<<<<<< HEAD
-=======
-def find_str(filename):
-    """????"""
-    return dirname(filename[filename.find('train' if 'train' in filename else 'val'):])
-
-
-def convert(size, box):
-    """size , box -> x, y, w, h"""
-    dw = 1. / size[0]
-    dh = 1. / size[1]
-    x = (box[0] + box[1]) / 2.0 - 1
-    y = (box[2] + box[3]) / 2.0 - 1
-    w = box[1] - box[0]
-    h = box[3] - box[2]
-    x *= dw
-    w *= dw
-    y *= dh
-    h *= dh
-    return x, y, w, h
-
-
-def convert_boxes(shape, anno_infos, label_txt_dir):
-    height, width, _ = shape
-    label_file = open(label_txt_dir, 'w')
-    for target_id, x1, y1, x2, y2 in anno_infos:
-        b = (float(x1), float(x2), float(y1), float(y2))
-        bb = convert((width, height), b)
-        label_file.write(str(target_id) + " " + " ".join([str(a) for a in bb]) + '\n')
-
-
-def is_small_object(bbox, thresh):
-    """check if the given bbox is small object, iff area <= thresh"""
-    return bbox[0] * bbox[1] <= thresh
-
-
-# def load_txt_label(label_txt_path):
-#     return np.loadtxt(label_txt_path, dtype=str)
-#
-#
-# def load_txt_labels(label_dir):
-#     return [load_txt_label(label) for label in label_dir]
-
-
->>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
 def ensure_dir_exists(_dir):
     if not os.path.exists(_dir):
         os.makedirs(_dir)
@@ -93,12 +48,6 @@ def compute_iou(box1, box2):
     cls1, b1_x1, b1_y1, b1_x2, b1_y2 = box1
     cls2, b2_x1, b2_y1, b2_x2, b2_y2 = box2
 
-<<<<<<< HEAD
-=======
-    # TODO: debug
-    # assert cls1 == cls2, "2 boxes to compute iou should be same class"
-
->>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
     # Get the coordinates of the intersection rectangle
     inter_x1 = max(b1_x1, b2_x1)
     inter_y1 = max(b1_y1, b2_y1)
@@ -133,16 +82,10 @@ def uniform_sample(search_space):
     return [new_bbox_x_c, new_bbox_y_c]
 
 
-<<<<<<< HEAD
 def sample_new_bbox_center(img_shape, bbox_h, bbox_w, safe_restrict=20):
     """
         bbox产生的范围
     :param safe_restrict:
-=======
-def sample_new_bbox_center(img_shape, bbox_h, bbox_w):
-    """
-        bbox产生的范围
->>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
     :param img_shape:
     :param bbox_h:
     :param bbox_w:
@@ -151,20 +94,12 @@ def sample_new_bbox_center(img_shape, bbox_h, bbox_w):
     # sampling space
     h, w, n_channels = img_shape
 
-<<<<<<< HEAD
     # 检查横纵坐标是否是反的
     search_x_left, search_y_left, search_x_right, search_y_right =  bbox_w/2, bbox_h/2, w - bbox_w/2 - safe_restrict,\
                                                                     h - bbox_h/2 - safe_restrict
 
     # check this out
     # if x_left <= w / 2:  # ??????????? -> 仅仅是一个搜索范围的问题
-=======
-    # TODO: 检查横纵坐标是否是反的
-    search_x_left, search_y_left, search_x_right, search_y_right =  bbox_w/2, bbox_h/2, w - bbox_w/2, h - bbox_h/2
-
-    # TODO: check this out
-    # if x_left <= w / 2:  # ???????????
->>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
     #     search_x_left, search_y_left, search_x_right, search_y_right = w * 0.6, h / 2, w * 0.75, h * 0.75
     # else:
     #     search_x_left, search_y_left, search_x_right, search_y_right = w * 0.25, h / 2, w * 0.5, h * 0.75
@@ -192,10 +127,7 @@ def random_search(all_labels, croped_label, shape, n_paste=1, iou_thresh=0.2):
     :return:
     """
     cls, (bbox_h, bbox_w) = croped_label
-<<<<<<< HEAD
     # TODO: 这里会产生一个bug，当bbox等于H-1或者W-1时，后续变换会越界
-=======
->>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
     center_search_space = sample_new_bbox_center(shape, bbox_h, bbox_w)
 
     n_success = 0
@@ -204,17 +136,11 @@ def random_search(all_labels, croped_label, shape, n_paste=1, iou_thresh=0.2):
     # 当尝试次数大于20次就停止
     while n_success < n_paste and n_trials < 20:
         new_bbox_x_center, new_bbox_y_center = uniform_sample(center_search_space)
-<<<<<<< HEAD
 
         # bug 如果box w为奇数，那么会少一个像素点(fixed)
         new_bbox_x_left, new_bbox_y_left = int(new_bbox_x_center - 0.5 * bbox_w), int(new_bbox_y_center - 0.5 * bbox_h)
         new_bbox_x_right, new_bbox_y_right = new_bbox_x_left + bbox_w, new_bbox_y_left + bbox_h
 
-=======
-        new_bbox_x_left, new_bbox_y_left, new_bbox_x_right, new_bbox_y_right = int(
-            new_bbox_x_center - 0.5 * bbox_w), int(new_bbox_y_center - 0.5 * bbox_h), int(
-            new_bbox_x_center + 0.5 * bbox_w), int(new_bbox_y_center + 0.5 * bbox_h)
->>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
         new_bbox = [cls, new_bbox_x_left, new_bbox_y_left, new_bbox_x_right, new_bbox_y_right]
         # 计算iou
         ious = [compute_iou(new_bbox, bbox_t) for bbox_t in all_labels]
@@ -234,7 +160,6 @@ from xml_utils import read_label_xml, write_label_xml
 
 
 def paste_small_objects_to_single_img(img_path, label_path, croped_images, croped_dir, save_img_dir, save_anno_dir,
-<<<<<<< HEAD
                                                                         n_bboxes=6, prob=1.0, origin_rescale=False,
                                                                         origin_rescaled_size=800, croped_rescale=False,
                                                                         croped_rescale_size=150):
@@ -245,11 +170,6 @@ def paste_small_objects_to_single_img(img_path, label_path, croped_images, crope
     :param origin_rescaled_size:
     :param origin_rescale:          是否reseize原始尺寸，使得crop图像不至于太小
     :param prob:
-=======
-                                                                        n_bboxes=6):
-    """
-
->>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
     :param save_anno_dir:
     :param save_img_dir:
     :param croped_dir:
@@ -260,20 +180,16 @@ def paste_small_objects_to_single_img(img_path, label_path, croped_images, crope
     :type croped_images: dict
     :return:
     """
-<<<<<<< HEAD
     if random.randint(0, 1) > prob:
         return
 
     # 检查dir是否存在
     ensure_dir_exists(save_img_dir)
     ensure_dir_exists(save_anno_dir)
-=======
->>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
 
     origin_image = cv2_im_read(img_path)
     origin_labels = read_label_xml(label_path)
 
-<<<<<<< HEAD
     # TODO: 调节原始图像的大小，不然融合起来有点奇怪
     if origin_rescale:
         annotations = np.array(origin_labels)
@@ -308,20 +224,13 @@ def paste_small_objects_to_single_img(img_path, label_path, croped_images, crope
 
 
     # delete (测试)
-=======
-    # TODO: delete (测试)
->>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
     # cv2_img_show(origin_image)
     # draw_annotation_to_image(origin_image, origin_labels)
 
     if len(origin_labels) >= n_bboxes:
         return
 
-<<<<<<< HEAD
     # 添加所有的锚框，方便后续写入文件
-=======
-    # TODO: 添加所有的锚框，方便后续写入文件
->>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
     all_labels = []
     all_labels.extend(origin_labels)
 
@@ -338,7 +247,6 @@ def paste_small_objects_to_single_img(img_path, label_path, croped_images, crope
         croped_cls = croped_images.get(croped_id)
 
         roi = cv2_im_read(croped_img_path)
-<<<<<<< HEAD
         _h, _w, _ = roi.shape
         # TODO: resize 小图像
         if croped_rescale:
@@ -352,8 +260,6 @@ def paste_small_objects_to_single_img(img_path, label_path, croped_images, crope
         # cv2.imshow('', roi)
         # cv2.waitKey(0)
 
-=======
->>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
         croped_label = [croped_cls, roi.shape[:2]]
 
         # searching for places
@@ -366,7 +272,6 @@ def paste_small_objects_to_single_img(img_path, label_path, croped_images, crope
                 # 随机翻转
                 roi = random_flip_bbox(roi)
                 # TODO: 图像融合，尝试泊松融合
-<<<<<<< HEAD
                 # fuse_img(origin_image, roi, bbox_left, bbox_top, bbox_right, bbox_bottom, mode='normal')
                 fuse_img(origin_image, roi, bbox_left, bbox_top, bbox_right, bbox_bottom, mode='cutmix')
             except ValueError as e:
@@ -377,15 +282,6 @@ def paste_small_objects_to_single_img(img_path, label_path, croped_images, crope
 
     # 保存结果
     # step 1 命名
-=======
-                fuse_img(origin_image, roi, bbox_left, bbox_top, bbox_right, bbox_bottom)
-            except ValueError as e:
-                print(e)
-
-    # TODO: 保存结果
-
-    # TODO: step 1 命名
->>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
     # [source_file_name]_n_bboxes_timestamp.jpg
     # [source_file_name]_n_bboxes_timestamp.xml
     aug_img_file_name = '{}_pasted_{}_boxes_{}.jpg'.format(os.path.basename(img_path).split('.jpg')[0], n_bboxes,
@@ -394,17 +290,10 @@ def paste_small_objects_to_single_img(img_path, label_path, croped_images, crope
     aug_img_path = os.path.join(save_img_dir, aug_img_file_name)
     aug_anno_path = os.path.join(save_anno_dir, aug_anno_file_name)
 
-<<<<<<< HEAD
     # step 2 保存图像
     cv_imwrite(aug_img_path, origin_image)
 
     # step 3 保存label，这里使用xml形式
-=======
-    # TODO: step 2 保存图像
-    cv_imwrite(aug_img_path, origin_image)
-
-    # TODO: step 3 保存label，这里使用xml形式
->>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
     write_label_xml(aug_anno_path, all_labels, origin_image.shape)
 
 
@@ -443,33 +332,12 @@ def draw_annotation_to_image(img, annotations):
     cv2_img_show(img)
     # cv2.imwrite(save_img_dir, img)
 
-<<<<<<< HEAD
 
 def fuse_img(origin_image, roi, bbox_left, bbox_top, bbox_right, bbox_bottom, mode='normal', cutmix_lambda=0.5):
     """
             尝试融合两个图像
     :param cutmix_lambda:
     :param mode:                cutmix, normal, poisson
-=======
-def save_crop_image(save_crop_base_dir, image_dir, idx, roi):
-    """
-        保存crop的图像，从
-    :param save_crop_base_dir:
-    :param image_dir:
-    :param idx:
-    :param roi:
-    :return:
-    """
-    crop_save_dir = join(save_crop_base_dir, find_str(image_dir))
-    ensure_dir_exists(crop_save_dir)
-    crop_img_save_dir = join(crop_save_dir, basename(image_dir)[:-3] + '_crop_' + str(idx) + '.jpg')
-    cv2.imwrite(crop_img_save_dir, roi)
-
-
-def fuse_img(origin_image, roi, bbox_left, bbox_top, bbox_right, bbox_bottom):
-    """
-            尝试融合两个图像
->>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
     :param origin_image:
     :param roi:
     :param bbox_left:
@@ -478,7 +346,6 @@ def fuse_img(origin_image, roi, bbox_left, bbox_top, bbox_right, bbox_bottom):
     :param bbox_bottom:
     :return:
     """
-<<<<<<< HEAD
     if mode == 'normal':
         # (bug) could not broadcast input array from shape (93,97,3) into shape (92,97,3)
         # -> fixed, shawn_zhu 2020.6.12 10:31
@@ -490,10 +357,6 @@ def fuse_img(origin_image, roi, bbox_left, bbox_top, bbox_right, bbox_bottom):
         # TODO: cutmix
         _tmp_roi = origin_image[bbox_top:bbox_bottom, bbox_left:bbox_right] * cutmix_lambda + roi * (1-cutmix_lambda)
         origin_image[bbox_top:bbox_bottom, bbox_left:bbox_right] = _tmp_roi
-=======
-    # TODO: (bug) could not broadcast input array from shape (93,97,3) into shape (92,97,3)
-    origin_image[bbox_top:bbox_bottom, bbox_left:bbox_right] = roi
->>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
 
     return origin_image
 
@@ -504,7 +367,6 @@ def cv_imwrite(filename, src):
     :param src:
     :return:
     """
-<<<<<<< HEAD
     cv2.imencode('.jpg',src)[1].tofile(filename)
 
 # 图像resize
@@ -523,6 +385,3 @@ def get_aug(_aug, min_area=0., min_visibility=0.):
     """
     return Compose(_aug, bbox_params=BboxParams(format='pascal_voc', min_area=min_area,
                                                min_visibility=min_visibility, label_fields=['bbox_labels']))
-=======
-    cv2.imencode('.jpg',src)[1].tofile(filename)
->>>>>>> 285170affc11c5b1b120f9111798f6fb0851ee7b
