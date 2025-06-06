@@ -28,10 +28,10 @@ import numpy as np
 from aug import ensure_dir_exists, img_paths2label_paths, paste_small_objects_to_single_img
 
 
-IMG_DIR = r'G:\比赛\华为垃圾目标检测分类\数据\trainval\VOC2007\JPEGImages'
-ANNO_DIR = r'G:\比赛\华为垃圾目标检测分类\数据\trainval\VOC2007\Annotations'
-PASTE_IMG_DIR = r'G:\比赛\华为垃圾目标检测分类\数据\trainval\VOC2007\Augmentation\Images'
-PASTE_ANNO_DIR = r'G:\比赛\华为垃圾目标检测分类\数据\trainval\VOC2007\Augmentation\Annotations'
+IMG_DIR = r'\trainval\VOC2007\JPEGImages'
+ANNO_DIR = r'\trainval\VOC2007\Annotations'
+PASTE_IMG_DIR = r'\trainval\VOC2007\Augmentation\Images'
+PASTE_ANNO_DIR = r'\trainval\VOC2007\Augmentation\Annotations'
 
 # TODO: cv2不支持中文路径，这里可以check一下
 CROPPED_IMG_DIR = r'G:\data\trainval\VOC2007\Crop_3_150x150'
