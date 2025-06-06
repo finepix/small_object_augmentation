@@ -29,7 +29,7 @@ PASTE_IMG_DIR = r'G:\比赛\华为垃圾目标检测分类\数据\trainval\VOC20
 PASTE_ANNO_DIR = r'G:\比赛\华为垃圾目标检测分类\数据\trainval\VOC2007\Augmentation\Annotations'
 
 # TODO: cv2不支持中文路径，这里可以check一下
-CROPED_IMG_DIR = r'G:\data\trainval\VOC2007\Crop_3_150x150'
+CROPPED_IMG_DIR = r'G:\data\trainval\VOC2007\Crop_3_150x150'
 
 MAX_WIDTH = 1000
 MAX_HEIGHT = 1000
@@ -88,18 +88,18 @@ def read_anno_for_size_cls(anno_path, related_classes):
 
     return (h, w), use_this_sample
 
-def get_all_croped_image_path(_hard_cls, croped_dir=CROPED_IMG_DIR):
+def get_all_cropped_image_paths(_hard_cls, cropped_dir=CROPPED_IMG_DIR):
     """
         获取crop图像的列表，返回dict
     :param _hard_cls:
     :param hard_cls:
-    :param croped_dir:
+    :param cropped_dir:
     :return:
     """
     result_dict = dict()
 
     # 文件格式: [cls]_[source]_[timestamp].jpg ---> 文件格式: [cls]_[source]_[timestamp]
-    img_file_names = [x.split('.jpg')[0] for x in os.listdir(croped_dir)]
+    img_file_names = [x.split('.jpg')[0] for x in os.listdir(cropped_dir)]
 
     for file_name in img_file_names:
         _cls = file_name.split('_')[0]
@@ -137,18 +137,22 @@ if __name__ == "__main__":
         source_ids = search_anno_dir(ANNO_DIR, related_classes=rlt_cls)
 
         # step 1 获取所有的crop下来的图像
-        croped_image_dict = get_all_croped_image_path(cls, CROPED_IMG_DIR)
+        cropped_image_dict = get_all_cropped_image_paths(cls, CROPPED_IMG_DIR)
 
         # 遍历每一个图像，并且在里面随机进行paste
-        for source_id in tqdm(source_ids, desc=f'hard class:{cls}, pasting croped images.'):
+        for source_id in tqdm(source_ids, desc=f'hard class:{cls}, pasting cropped images.'):
             source_img_path = os.path.join(IMG_DIR, source_id+'.jpg')
             source_anno_path = os.path.join(ANNO_DIR, source_id+'.xml')
 
             # step 2 随机从crop的图像中选取n个出来paste，个数取决于这个图像的分辨率, 将得到的图像保存的熬指定的位置
-            paste_small_objects_to_single_img(source_img_path, source_anno_path, croped_image_dict,
-                                                      croped_dir=CROPED_IMG_DIR,
-                                                      save_img_dir=PASTE_IMG_DIR,
-                                                      save_anno_dir=PASTE_ANNO_DIR,
-                                                      prob=0.3,
-                                                      origin_rescale=True,  # 对于原始图像resize
-                                                      croped_rescale=True)  # 对于crop的图像resize
+            paste_small_objects_to_single_img(
+                source_img_path,
+                source_anno_path,
+                cropped_image_dict,
+                cropped_dir=CROPPED_IMG_DIR,
+                save_img_dir=PASTE_IMG_DIR,
+                save_anno_dir=PASTE_ANNO_DIR,
+                prob=0.3,
+                origin_rescale=True,  # 对于原始图像resize
+                cropped_rescale=True
+            )  # 对于crop的图像resize

@@ -115,18 +115,18 @@ def img_paths2label_paths(img_paths):
     return [img_path.replace('.jpg', '.txt') for img_path in img_paths]
 
 
-def random_search(all_labels, croped_label, shape, n_paste=1, iou_thresh=0.2):
+def random_search(all_labels, cropped_label, shape, n_paste=1, iou_thresh=0.2):
     """
         搜索出一个框
 
     :param all_labels:
-    :param croped_label:
+    :param cropped_label:
     :param shape:
     :param n_paste:
     :param iou_thresh:
     :return:
     """
-    cls, (bbox_h, bbox_w) = croped_label
+    cls, (bbox_h, bbox_w) = cropped_label
     # TODO: 这里会产生一个bug，当bbox等于H-1或者W-1时，后续变换会越界
     center_search_space = sample_new_bbox_center(shape, bbox_h, bbox_w)
 
@@ -159,25 +159,25 @@ def random_search(all_labels, croped_label, shape, n_paste=1, iou_thresh=0.2):
 from xml_utils import read_label_xml, write_label_xml
 
 
-def paste_small_objects_to_single_img(img_path, label_path, croped_images, croped_dir, save_img_dir, save_anno_dir,
-                                                                        n_bboxes=6, prob=1.0, origin_rescale=False,
-                                                                        origin_rescaled_size=800, croped_rescale=False,
-                                                                        croped_rescale_size=150):
+def paste_small_objects_to_single_img(img_path, label_path, cropped_images, cropped_dir, save_img_dir, save_anno_dir,
+                                      n_bboxes=6, prob=1.0, origin_rescale=False,
+                                      origin_rescaled_size=800, cropped_rescale=False,
+                                      cropped_rescale_size=150):
     """
             按照一定的概率去paste
-    :param croped_rescale_size:
-    :param croped_rescale:
+    :param cropped_rescale_size:
+    :param cropped_rescale:
     :param origin_rescaled_size:
-    :param origin_rescale:          是否reseize原始尺寸，使得crop图像不至于太小
+    :param origin_rescale:          是否resize原始尺寸，使得crop图像不至于太小
     :param prob:
     :param save_anno_dir:
     :param save_img_dir:
-    :param croped_dir:
+    :param cropped_dir:
     :param img_path:
     :param label_path:
-    :param croped_images:
+    :param cropped_images:
     :param n_bboxes:
-    :type croped_images: dict
+    :type cropped_images: dict
     :return:
     """
     if random.randint(0, 1) > prob:
@@ -235,24 +235,24 @@ def paste_small_objects_to_single_img(img_path, label_path, croped_images, crope
     all_labels.extend(origin_labels)
 
     # 从待选的crop图像中选取n个填充到原图像中
-    n_croped_images = len(croped_images.keys())
-    list_croped_images = list(croped_images.keys())
-    tmp_idx = np.random.permutation(n_croped_images)
+    n_cropped_images = len(cropped_images.keys())
+    list_cropped_images = list(cropped_images.keys())
+    tmp_idx = np.random.permutation(n_cropped_images)
 
     # 往图像中插入图
     for i in range(n_bboxes):
         # 读取crop图像
-        croped_id = list_croped_images[tmp_idx[i]]
-        croped_img_path = os.path.join(croped_dir, croped_id + '.jpg')
-        croped_cls = croped_images.get(croped_id)
+        cropped_id = list_cropped_images[tmp_idx[i]]
+        cropped_img_path = os.path.join(cropped_dir, cropped_id + '.jpg')
+        cropped_cls = cropped_images.get(cropped_id)
 
-        roi = cv2_im_read(croped_img_path)
+        roi = cv2_im_read(cropped_img_path)
         _h, _w, _ = roi.shape
         # TODO: resize 小图像
-        if croped_rescale:
+        if cropped_rescale:
             # 足够小
             if max(_h, _w) < 80:
-                roi = cv2.resize(roi, (int(_w * (croped_rescale_size / _h)), croped_rescale_size),
+                roi = cv2.resize(roi, (int(_w * (cropped_rescale_size / _h)), cropped_rescale_size),
                                                                                         interpolation=cv2.INTER_CUBIC)
 
         # debug
@@ -260,10 +260,10 @@ def paste_small_objects_to_single_img(img_path, label_path, croped_images, crope
         # cv2.imshow('', roi)
         # cv2.waitKey(0)
 
-        croped_label = [croped_cls, roi.shape[:2]]
+        cropped_label = [cropped_cls, roi.shape[:2]]
 
         # searching for places
-        new_bboxes = random_search(all_labels, croped_label, origin_image.shape, n_paste=1, iou_thresh=0.2)
+        new_bboxes = random_search(all_labels, cropped_label, origin_image.shape, n_paste=1, iou_thresh=0.2)
 
         for new_label in new_bboxes:
             all_labels.append(new_label)

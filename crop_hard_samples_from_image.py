@@ -80,7 +80,7 @@ for xml in tqdm(xml_files, desc='searching xml files'):
 
 # 2、写入文件
 with open('txt/hard_samples_3_cat.txt', 'w') as f:
-    for item in tqdm(needed_xmls, desc='wirte files'):
+    for item in tqdm(needed_xmls, desc='write files'):
         item_id = item.split('.xml')[0]
         f.write(item_id + '\n')
 
